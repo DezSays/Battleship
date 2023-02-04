@@ -11,7 +11,7 @@ const findAll = async req => {
     });
 }
 
-router.get("/manageHabits", auth, async (req, res) => {
+router.get("/manageHabits", async (req, res) => {
     try {
         const records = await findAll(req);
         res.render("manageHabits", { habits: records });
