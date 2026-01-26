@@ -1,4 +1,7 @@
 /* This is a basic setup for a Node.js server using the Express framework. */
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 
 const express = require("express");
 const app = express();
