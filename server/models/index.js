@@ -1,4 +1,6 @@
 /* This file initializes Sequelize using environment variables instead of config.json */
+require("pg");
+require("pg-hstore"); 
 const fs = require("fs");
 const path = require("path");
 const Sequelize = require("sequelize");
