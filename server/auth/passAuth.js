@@ -1,26 +1,26 @@
-/* This code is setting up authentication strategies for a Node.js application using the Passport.js
-library. It is importing necessary modules such as `passport`, `LocalStrategy`, `JwtStrategy`,
-`ExtractJwt`, `bcrypt`, and database models. */
+/* This code sets up authentication strategies for a Node.js application using Passport.js */
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const bcrypt = require("bcrypt");
 const db = require("../models");
-const secretObj = require("../secrets");
 
 const localLogin = new LocalStrategy(
   { usernameField: "email" },
   async (email, password, done) => {
     try {
-      const record = await db.User.findAll({ where: { email } });
-      if (record.length) {
-        bcrypt.compare(password, record[0].password, (error, match) => {
-          if (error) return done(error);
-          if (!match) return done(null, false);
-          return done(null, record[0]);
-        });
-      } else return done(null, false);
+      const records = await db.User.findAll({ where: { email } });
+
+      if (!records.length) return done(null, false);
+
+      const user = records[0];
+
+      bcrypt.compare(password, user.password, (error, match) => {
+        if (error) return done(error);
+        if (!match) return done(null, false);
+        return done(null, user);
+      });
     } catch (error) {
       console.log(error.message);
       return done(error);
@@ -30,22 +30,18 @@ const localLogin = new LocalStrategy(
 
 passport.use(localLogin);
 
-let jwtOptions = {
+const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromHeader("authorization"),
-  secretOrKey: secretObj.secret,
+  secretOrKey: process.env.JWT_SECRET,
 };
 
-let jwtLogin = new JwtStrategy(jwtOptions, async (payload, done) => {
+const jwtLogin = new JwtStrategy(jwtOptions, async (payload, done) => {
   try {
-    let userID = payload.sub;
+    const userID = payload.sub;
+    const user = await db.User.findByPk(userID);
 
-    let user = await db.User.findByPk(userID); //{}
-
-    if (user) {
-      return done(null, user);
-    } else {
-      return done(null, false);
-    }
+    if (user) return done(null, user);
+    return done(null, false);
   } catch (error) {
     return done(error);
   }

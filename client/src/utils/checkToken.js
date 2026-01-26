@@ -9,7 +9,7 @@ import { loadUserInfo } from "../actions/userActions";
 const checkToken = async () => {
   if (localStorage.token) {
     try {
-      const response = await axios.get("https://hidden-tundra-22870.herokuapp.com/protected", {
+      const response = await axios.get("https://battleship-8nff.vercel.app/protected", {
         headers: {
           authorization: localStorage.token,
         },

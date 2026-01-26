@@ -1,33 +1,35 @@
-/* This is a JavaScript code that exports a Sequelize instance and its models. It connects to a
-database using the configuration file specified in `config/config.json`. It reads all the model
-files in the current directory and associates them with the Sequelize instance. Finally, it exports
-the Sequelize instance and its models as an object. */
-"use strict";
-
+/* This file initializes Sequelize using environment variables instead of config.json */
 const fs = require("fs");
 const path = require("path");
 const Sequelize = require("sequelize");
 const basename = path.basename(__filename);
-const env = process.env.NODE_ENV || "development";
-const config = require(__dirname + "/../config/config.json")[env];
 const db = {};
 
 let sequelize;
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
+
+// Use DATABASE_URL from env (Vercel + local .env)
+if (process.env.DATABASE_URL) {
+  sequelize = new Sequelize(process.env.DATABASE_URL, {
+    dialect: "postgres",
+    logging: false,
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
+  });
 } else {
-  sequelize = new Sequelize(
-    config.database,
-    config.username,
-    config.password,
-    config
-  );
+  throw new Error("DATABASE_URL is not defined in environment variables.");
 }
 
+// Load all models
 fs.readdirSync(__dirname)
   .filter((file) => {
     return (
-      file.indexOf(".") !== 0 && file !== basename && file.slice(-3) === ".js"
+      file.indexOf(".") !== 0 &&
+      file !== basename &&
+      file.slice(-3) === ".js"
     );
   })
   .forEach((file) => {
@@ -38,6 +40,7 @@ fs.readdirSync(__dirname)
     db[model.name] = model;
   });
 
+// Run associations if they exist
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {
     db[modelName].associate(db);

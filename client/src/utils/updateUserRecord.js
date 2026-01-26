@@ -8,9 +8,9 @@
 import axios from "axios";
 
 export const updateUserWinsInDatabase = (email, wins) => {
-  axios.put(`https://hidden-tundra-22870.herokuapp.com/api/wins/${email}/${wins}`);
+  axios.put(`https://battleship-8nff.vercel.app/api/wins/${email}/${wins}`);
 };
 
 export const updateUserLossesInDatabase = (email, losses) => {
-  axios.put(`https://hidden-tundra-22870.herokuapp.com/api/losses/${email}/${losses}`);
+  axios.put(`https://battleship-8nff.vercel.app/api/losses/${email}/${losses}`);
 };

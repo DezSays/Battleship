@@ -13,7 +13,7 @@ Overall, the Battleship web application offers a modern take on a classic game, 
 
 ## Live site
 
-Check out the [Live Site](https://battleship-umber.vercel.app/login)! Our frontend is hosted on [Vercel](https://battleship-umber.vercel.app/login), and the backend is deployed using [Heroku](https://hidden-tundra-22870.herokuapp.com). Check out our demo of this app on [Youtube](https://www.youtube.com/embed/YZ7vUYK2cvs).
+Check out the [Live Site](https://battleship-umber.vercel.app/login)! Our frontend is hosted on [Vercel](https://battleship-umber.vercel.app/login), and the backend is also deployed using [Vercel](battleship-8nff.vercel.app). Check out our demo of this app on [Youtube](https://www.youtube.com/embed/YZ7vUYK2cvs).
 
 
 ## Server Architecture
