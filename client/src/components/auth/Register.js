@@ -33,7 +33,7 @@ const Register = () => {
       } else {
         setMessage("");
         try {
-          const response = await axios.post("https://battleship-8nff.vercel.app/register", {
+          const response = await axios.post("https://battleship-server.vercel.app/register", {
             email,
             password,
             name,

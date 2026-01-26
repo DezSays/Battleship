@@ -31,7 +31,7 @@ const Login = () => {
       if (email.match(/.+@.+\....+/)) {
         setMessage("");
         try {
-          const response = await axios.post("https://battleship-8nff.vercel.app/login", { email, password });
+          const response = await axios.post("https://battleship-server.vercel.app/login", { email, password });
           if (response.data) {
             dispatch(addToken(response.data.token));
             dispatch(loadUserInfo(response.data));
