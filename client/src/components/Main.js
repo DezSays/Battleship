@@ -43,7 +43,15 @@ const Main = () => {
       updateUserLossesInDatabase(email, losses + 1);
       dispatch(updateLosses(losses + 1));
     }
-  }, [gameOver]);
+  }, [
+    gameOver,
+    shipCoordinates.length,
+    computerShipCoordinates.length,
+    dispatch,
+    email,
+    wins,
+    losses,
+  ]);
 
   return (
     <div className="background">
