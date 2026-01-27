@@ -3,5 +3,10 @@
     "app.js": {
       "includeFiles": "node_modules/pg/**"
     }
+  },
+  "projects": {
+    "server": {
+      "rootDirectory": "server"
+    }
   }
 }
