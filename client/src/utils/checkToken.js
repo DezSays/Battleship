@@ -9,7 +9,7 @@ import { loadUserInfo } from "../actions/userActions";
 const checkToken = async () => {
   if (localStorage.token) {
     try {
-      const response = await axios.get("https://battleship-server.vercel.app/protected", {
+      const response = await axios.get("https://battleship-8nff.vercel.app/protected", {
         headers: {
           authorization: localStorage.token,
         },
