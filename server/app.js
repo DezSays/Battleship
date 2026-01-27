@@ -1,29 +1,55 @@
-/* This is a basic setup for a Node.js server using the Express framework. */
+/* Basic setup for a Node.js server using Express */
+
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
 
 const express = require("express");
-const app = express();
-const db = require("./models");
 const cors = require("cors");
-require("dotenv").config();
+const db = require("./models");
 
+const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(cors());
+/* ---- CORS CONFIG ---- */
+const allowedOrigins = [
+  "https://battleship-8nff.vercel.app"
+];
 
-app.use(require("./routes"));
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // allow server-to-server / Postman requests
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        return callback(new Error(`CORS blocked for origin: ${origin}`));
+      }
+    },
+    credentials: true,
+  })
+);
+
 app.options("*", cors());
 
-// Test DB connection + sync models
-db.sequelize.sync({ force: false }).then(() => {
-  console.log("Database connected.");
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+/* ---- BODY PARSERS ---- */
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+/* ---- ROUTES ---- */
+app.use(require("./routes"));
+
+/* ---- DB CONNECT + SERVER START ---- */
+db.sequelize
+  .sync({ force: false })
+  .then(() => {
+    console.log("Database connected.");
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("Failed to connect to database:", err);
   });
-}).catch(err => {
-  console.error("Failed to connect to database:", err);
-});
