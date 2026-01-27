@@ -3,7 +3,7 @@
  * and handles user interactions and updates to the game state.
  * @returns The component GridSquare is being returned.
  */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import {
@@ -38,7 +38,7 @@ const GridSquare = ({ id, row, col }) => {
   const [selected, setSelected] = useState("");
   const [pickedPreviously, setPickedPreviously] = useState(false);
 
-  const handleHover = () => {
+  const handleHover = useCallback(() => {
     dispatch(updateLastActiveSquare(id));
     if (shipOrientation === "horizontal" && col + shipLength - 1 <= 9) {
       let [anotherShip, squareList] = [false, []];
@@ -67,7 +67,7 @@ const GridSquare = ({ id, row, col }) => {
     } else {
       dispatch(modifySelectedSquares([""]));
     }
-  };
+  }, [dispatch, id, shipOrientation, col, shipLength, row, shipLocations]);
 
   const handleClick = () => {
     if (highlighted) {
@@ -101,11 +101,11 @@ const GridSquare = ({ id, row, col }) => {
       }
       if (!squareHighlighted) setHighlighted("");
     }
-  }, [selectedSquares]);
+  }, [selectedSquares, id]);
 
   useEffect(() => {
     id in shipLocations ? setSelected(" selected") : setSelected("");
-  }, [shipLocations]);
+  }, [shipLocations, id]);
 
   useEffect(() => {
     if (!pickedPreviously && id in coordinatesPicked) {
@@ -128,11 +128,18 @@ const GridSquare = ({ id, row, col }) => {
         dispatch(updateLastHit());
       }
     }
-  }, [coordinatesPicked]);
+  }, [
+    coordinatesPicked,
+    dispatch,
+    id,
+    pickedPreviously,
+    selected,
+    shipCoordinates,
+  ]);
 
   useEffect(() => {
     if (id === lastActiveSquare) handleHover();
-  }, [shipOrientation]);
+  }, [handleHover, id, lastActiveSquare]);
 
   useEffect(() => {
     setPickedPreviously(false);

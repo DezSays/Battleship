@@ -61,7 +61,7 @@ const CompGridSquare = ({ id }) => {
       if (id in computerShipLocations) setStatus("hit");
       else setStatus("miss");
     }
-  }, []);
+  }, [computerShipLocations, id, userSelections]);
 
   return (
     <div

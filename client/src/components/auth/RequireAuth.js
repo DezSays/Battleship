@@ -20,7 +20,7 @@ const RequireAuth = (props) => {
 
   React.useEffect(() => {
     if (!auth) navigate("/login");
-  }, [auth]);
+  }, [auth, navigate]);
 
   return props.children;
 };
