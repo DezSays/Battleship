@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3001;
 
 /* ---- CORS CONFIG ---- */
 const allowedOrigins = [
-  "https://battleship-8nff.vercel.app"
+  "https://battleship-umber.vercel.app"
 ];
 
 app.use(
