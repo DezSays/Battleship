@@ -1,12 +1,7 @@
 {
   "functions": {
-    "app.js": {
-      "includeFiles": "node_modules/pg/**"
-    }
-  },
-  "projects": {
-    "server": {
-      "rootDirectory": "server"
+    "server/app.js": {
+      "includeFiles": "server/node_modules/pg/**"
     }
   }
 }
