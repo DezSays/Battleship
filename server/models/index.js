@@ -1,4 +1,5 @@
-"use strict";
+require("pg");
+require("pg-hstore");
 
 const fs = require("fs");
 const path = require("path");
@@ -7,17 +8,12 @@ const Sequelize = require("sequelize");
 const basename = path.basename(__filename);
 const db = {};
 
-// Load .env locally; Vercel provides env automatically in production
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
 
-// Prefer a single DATABASE_URL if you have it
-// Example:
-// postgres://user:pass@host:6543/postgres?sslmode=require&pgbouncer=true&uselibpqcompat=true
 const DATABASE_URL = process.env.DATABASE_URL;
 
-// Or fall back to individual fields
 const DB_NAME = process.env.DB_NAME;
 const DB_USER = process.env.DB_USER;
 const DB_PASSWORD = process.env.DB_PASSWORD;
