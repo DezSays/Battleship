@@ -10,13 +10,24 @@ const db = require("./models");
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-const allowedOrigins = ["https://battleship-umber.vercel.app"];
+const allowedOrigins = [
+  "https://battleship-umber.vercel.app",
+  "http://localhost:3000",
+];
 
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: (origin, callback) => {
+      // allow requests with no origin (like curl/postman)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+
+      return callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
   })
 );
 
@@ -29,9 +40,20 @@ app.use(require("./routes"));
 
 app.get("/health", (req, res) => res.status(200).json({ ok: true }));
 
-db.sequelize
-  .sync({ force: false })
-  .then(() => console.log("Database connected."))
-  .catch((err) => console.error("Failed to connect to database:", err));
+// Only start listening when this file is run directly: `node app.js` / `npm start`
+if (require.main === module) {
+  db.sequelize
+    .sync({ force: false })
+    .then(() => {
+      console.log("Database connected.");
+      app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+      });
+    })
+    .catch((err) => {
+      console.error("Failed to connect to database:", err);
+      process.exit(1);
+    });
+}
 
 module.exports = app;
