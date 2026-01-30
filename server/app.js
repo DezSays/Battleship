@@ -5,44 +5,40 @@ if (process.env.NODE_ENV !== "production") {
 
 const express = require("express");
 const cors = require("cors");
-const db = require("./models");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-const allowedOrigins = [
+const allowed_origins = [
   "https://battleship-umber.vercel.app",
   "http://localhost:3000",
 ];
 
-const corsOptions = {
+const cors_options = {
   origin: (origin, callback) => {
-    // Allow requests with no origin (curl/postman, server-to-server)
     if (!origin) return callback(null, true);
-
-    // Allow known front-end origins
-    if (allowedOrigins.includes(origin)) return callback(null, true);
-
-    // Do NOT throw (prevents confusing 500 + "CORS header missing")
-    return callback(null, false);
+    if (allowed_origins.includes(origin)) return callback(null, true);
+    return callback(new Error(`CORS blocked for origin: ${origin}`));
   },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 };
 
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
+app.use(cors(cors_options));
+app.options("*", cors(cors_options));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use(require("./routes"));
-
 app.get("/health", (req, res) => res.status(200).json({ ok: true }));
 
-// Only start listening when this file is run directly: `node app.js` / `npm start`
+app.use(require("./routes"));
+
 if (require.main === module) {
+  // Lazy-load DB only for local server startup
+  const db = require("./models");
+
   db.sequelize
     .sync({ force: false })
     .then(() => {
