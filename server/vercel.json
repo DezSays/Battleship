@@ -1,6 +1,6 @@
 {
   "functions": {
-    "server/app.js": {
+    "api/**/*.js": {
       "includeFiles": "server/node_modules/pg/**"
     }
   }
